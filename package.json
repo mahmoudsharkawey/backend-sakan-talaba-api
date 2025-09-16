@@ -1,0 +1,16 @@
+{
+  "name": "backend-sakan-talaba-api",
+  "version": "1.0.0",
+  "description": "Backend API for Sakan Talaba project",
+  "main": "api/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node api/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": ["api", "express", "backend"],
+  "author": "",
+  "license": "ISC"
+}
