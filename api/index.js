@@ -3,7 +3,7 @@ import express from "express";
 const app = express();
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello from backend! Sakan Talaba" });
+  res.json({ message: "Hello from backend Sakan Talaba API" });
 });
 
 export default app;
