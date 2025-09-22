@@ -6,6 +6,11 @@ import applyCoreMiddlewares from "../middlewares/core.js";
 import { notFound, errorHandler } from "../middlewares/errors.js";
 import routes from "../routes/index.js";
 
+// Trigger DB connection on cold start (serverless). Do not block initialization.
+connectToDatabase()
+  .then(() => logger.info("DB connection initialized"))
+  .catch((err) => logger.info("DB not connected yet", { error: err && err.message }));
+
 export function createServer() {
   const app = express();
 
