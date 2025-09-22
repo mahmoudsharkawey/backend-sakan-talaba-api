@@ -29,34 +29,6 @@ export function createServer() {
   return app;
 }
 
-// For Vercel serverless export the app directly
+// For Vercel/serverless export the app directly (no local bootstrap here)
 const app = createServer();
 export default app;
-
-// Local bootstrap
-if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  const start = async () => {
-    try {
-      try {
-        await connectToDatabase();
-        logger.info("Connected to MongoDB");
-      } catch (dbError) {
-        logger.warn(
-          "Could not connect to MongoDB on startup; continuing without DB",
-          "DB_CONNECTION_ERROR",
-          {
-            error: dbError.message,
-          }
-        );
-      }
-      const port = config.port ? Number(config.port) : 3000;
-      app.listen(port, () => {
-        logger.info(`Server running on http://localhost:${port}`);
-      });
-    } catch (error) {
-      logger.error("Failed to start server", { error: error.message });
-      process.exit(1);
-    }
-  };
-  start();
-}
