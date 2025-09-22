@@ -1,26 +1,35 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { logger } from "../utils/logger/index.js";
+import { connectToDatabase } from "../config/database.js";
 
 
 const router = Router();
 
 router.get("/health", async (req, res) => {
   try {
-    const state = mongoose.connection.readyState; // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
-    if (state === 1) {
-      res.json({ status: "ok", database: "connected" });
-      logger.info("Database connected");
-    } else if (state === 2) {
-      res.status(202).json({ status: "degraded", database: "connecting" });
-      logger.info("Database connecting");
-    } else {
-      res.status(503).json({ status: "degraded", database: "disconnected" });
-      logger.info("Database disconnected");
+    let state = mongoose.connection.readyState; // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+
+    if (state !== 1) {
+      try {
+        await connectToDatabase();
+        state = mongoose.connection.readyState;
+      } catch (_) {}
     }
+
+    if (state === 1) {
+      logger.info("Database connected");
+      return res.json({ status: "ok", database: "connected" });
+    }
+    if (state === 2) {
+      logger.info("Database connecting");
+      return res.status(202).json({ status: "degraded", database: "connecting" });
+    }
+    logger.info("Database disconnected");
+    return res.status(503).json({ status: "degraded", database: "disconnected" });
   } catch (error) {
-    res.status(503).json({ status: "degraded", database: "unknown" });
     logger.info("Database unknown");
+    return res.status(503).json({ status: "degraded", database: "unknown" });
   }
 });
 
