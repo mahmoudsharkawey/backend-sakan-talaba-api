@@ -49,8 +49,9 @@ if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
           }
         );
       }
-      app.listen(config.port, () => {
-        logger.info(`Server running on http://localhost:${config.port}`);
+      const port = config.port ? Number(config.port) : 3000;
+      app.listen(port, () => {
+        logger.info(`Server running on http://localhost:${port}`);
       });
     } catch (error) {
       logger.error("Failed to start server", { error: error.message });

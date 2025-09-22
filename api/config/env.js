@@ -3,23 +3,16 @@ import dotenv from "dotenv";
 // Load environment variables from .env if present
 dotenv.config();
 
-const environment = process.env.NODE_ENV ?? "development";
-const isProduction = environment === "production";
-
+// Export ONLY raw strings from process.env to avoid build-time analyzers
 export const config = {
-  environment,
-  isProduction,
-  port: process.env.PORT ? Number(process.env.PORT) : 3000,
-  mongoUri: process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017/sakan-talaba",
-  mongoDbName: process.env.MONGODB_DB ?? "sakan-talaba",
-  corsOrigins: (process.env.CORS_ORIGINS ?? "*")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean),
-  rateLimit: {
-    windowMs: process.env.RATE_LIMIT_WINDOW_MS ? Number(process.env.RATE_LIMIT_WINDOW_MS) : 15 * 60 * 1000,
-    max: process.env.RATE_LIMIT_MAX ? Number(process.env.RATE_LIMIT_MAX) : 100,
-  },
+  environment: process.env.NODE_ENV,
+  port: process.env.PORT,
+  mongoUri: process.env.MONGODB_URI,
+  mongoDbName: process.env.MONGODB_DB,
+  corsOrigins: process.env.CORS_ORIGINS,
+  rateLimitWindowMs: process.env.RATE_LIMIT_WINDOW_MS,
+  rateLimitMax: process.env.RATE_LIMIT_MAX,
+  logLevel: process.env.LOG_LEVEL,
 };
 
 export default config;

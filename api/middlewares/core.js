@@ -11,7 +11,10 @@ export function applyCoreMiddlewares(app) {
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: true }));
 
-  const corsOrigins = config.corsOrigins;
+  const corsOrigins = (config.corsOrigins ?? "*")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
   app.use(
     cors({
       origin: corsOrigins.length === 1 && corsOrigins[0] === "*" ? true : corsOrigins,
@@ -23,8 +26,8 @@ export function applyCoreMiddlewares(app) {
   app.use(compression());
 
   const limiter = rateLimit({
-    windowMs: config.rateLimit.windowMs,
-    max: config.rateLimit.max,
+    windowMs: config.rateLimitWindowMs ? Number(config.rateLimitWindowMs) : 15 * 60 * 1000,
+    max: config.rateLimitMax ? Number(config.rateLimitMax) : 100,
     standardHeaders: true,
     legacyHeaders: false,
   });
