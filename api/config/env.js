@@ -5,7 +5,6 @@ dotenv.config();
 
 // Export ONLY raw strings from process.env to avoid build-time analyzers
 export const config = {
-  environment: process.env.NODE_ENV,
   port: process.env.PORT,
   mongoUri: process.env.MONGODB_URI,
   mongoDbName: process.env.MONGODB_DB,

@@ -16,9 +16,7 @@ export function errorHandler(err, req, res, next) {
     code,
   };
 
-  if (process.env.NODE_ENV !== "production" && err.stack) {
-    response.stack = err.stack;
-  }
+  // Avoid environment checks in serverless path; omit stack by default
 
   res.status(status).json(response);
 }
