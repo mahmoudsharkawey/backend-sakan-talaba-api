@@ -1,5 +1,4 @@
 import express from "express";
-import config from "../config/env.js";
 import { connectToDatabase } from "../config/database.js";
 import { logger } from "../utils/logger/index.js";
 import httpLogger from "../middlewares/httpLogger.js";

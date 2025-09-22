@@ -5,6 +5,12 @@ import app, { createServer } from "./index.js";
 
 async function start() {
   try {
+    // Expose env values to app without bundling process.env in serverless path
+    globalThis.APP_CONFIG = {
+      corsOrigins: config.corsOrigins,
+      rateLimitWindowMs: config.rateLimitWindowMs,
+      rateLimitMax: config.rateLimitMax,
+    };
     try {
       await connectToDatabase();
       logger.info("Connected to MongoDB");
