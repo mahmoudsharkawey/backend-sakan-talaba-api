@@ -3,6 +3,8 @@ import { connectToDatabase } from "../config/database.js";
 import { logger } from "../utils/logger/index.js";
 import app from "./index.js";
 
+const PORT = process.env.PORT || 8080;
+
 async function start() {
   try {
     // expose app config
@@ -16,6 +18,8 @@ async function start() {
     try {
       await connectToDatabase();
       logger.info("Connected to MongoDB");
+      // Add a small delay to ensure connection is fully established
+      await new Promise(resolve => setTimeout(resolve, 2000));
     } catch (dbError) {
       logger.warn("Could not connect to MongoDB on startup; continuing without DB", {
         error: dbError.message,
