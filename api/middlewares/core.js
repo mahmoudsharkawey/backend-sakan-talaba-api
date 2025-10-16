@@ -13,16 +13,23 @@ export function applyCoreMiddlewares(app) {
   app.use(express.urlencoded({ extended: true }));
 
   const corsOriginsRaw = APP_CONFIG.corsOrigins ?? "*";
-  const corsOrigins = corsOriginsRaw
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-  app.use(
-    cors({
-      origin: corsOrigins.length === 1 && corsOrigins[0] === "*" ? true : corsOrigins,
+  let corsOptions;
+  if (corsOriginsRaw === "*") {
+    corsOptions = {
+      origin: true, // Allow all origins
       credentials: true,
-    })
-  );
+    };
+  } else {
+    const corsOrigins = corsOriginsRaw
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+    corsOptions = {
+      origin: corsOrigins,
+      credentials: true,
+    };
+  }
+  app.use(cors(corsOptions));
 
   app.use(helmet());
   app.use(compression());
