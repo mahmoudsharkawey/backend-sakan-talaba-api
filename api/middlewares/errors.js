@@ -16,8 +16,6 @@ export function errorHandler(err, req, res, next) {
     code,
   };
 
-  // Avoid environment checks in serverless path; omit stack by default
-
   res.status(status).json(response);
 }
 
