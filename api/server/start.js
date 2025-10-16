@@ -11,6 +11,7 @@ async function start() {
       rateLimitWindowMs: config.rateLimitWindowMs,
       rateLimitMax: config.rateLimitMax,
     };
+
     try {
       await connectToDatabase();
       logger.info("Connected to MongoDB");
@@ -18,14 +19,16 @@ async function start() {
       logger.warn(
         "Could not connect to MongoDB on startup; continuing without DB",
         "DB_CONNECTION_ERROR",
-        {
-          error: dbError.message,
-        }
+        { error: dbError.message }
       );
     }
-    const port = config.port ? Number(config.port) : 3000;
-    app.listen(port, () => {
-      logger.info(`Server running on http://localhost:${port}`);
+
+    // ✅ Use the PORT provided by the hosting platform or fallback to your config/env
+    const port = process.env.PORT || config.port || 3000;
+
+    // ✅ Important: listen on 0.0.0.0 (not localhost)
+    app.listen(port, "0.0.0.0", () => {
+      logger.info(`✅ Server running on http://0.0.0.0:${port}`);
     });
   } catch (error) {
     logger.error("Failed to start server", { error: error.message });
@@ -34,5 +37,3 @@ async function start() {
 }
 
 start();
-
-
