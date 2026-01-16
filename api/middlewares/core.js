@@ -7,11 +7,14 @@ import rateLimit from "express-rate-limit";
 const APP_CONFIG = globalThis.APP_CONFIG || {};
 
 export function applyCoreMiddlewares(app) {
+  // verify disable x-powered-by
   app.disable("x-powered-by");
 
+  // Body parsers
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: true }));
 
+  // cors setup
   const corsOriginsRaw = APP_CONFIG.corsOrigins ?? "*";
   let corsOptions;
   if (corsOriginsRaw === "*") {
@@ -31,11 +34,16 @@ export function applyCoreMiddlewares(app) {
   }
   app.use(cors(corsOptions));
 
+
   app.use(helmet());
+  // compression middleware
   app.use(compression());
 
+  // rate limiting middleware 
   const limiter = rateLimit({
-    windowMs: APP_CONFIG.rateLimitWindowMs ? Number(APP_CONFIG.rateLimitWindowMs) : 15 * 60 * 1000,
+    windowMs: APP_CONFIG.rateLimitWindowMs
+      ? Number(APP_CONFIG.rateLimitWindowMs)
+      : 15 * 60 * 1000,
     max: APP_CONFIG.rateLimitMax ? Number(APP_CONFIG.rateLimitMax) : 100,
     standardHeaders: true,
     legacyHeaders: false,
@@ -44,5 +52,3 @@ export function applyCoreMiddlewares(app) {
 }
 
 export default applyCoreMiddlewares;
-
-
